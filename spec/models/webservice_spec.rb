@@ -24,7 +24,7 @@ describe Webservice do
 
   it "should correctly transform special parameters" do
     webservice = Webservice.create!(:title => "web", :base_url => "url", :rule_scheme => rules)
-    webservice.load(
+    webservice.load!(
       :frequency => 'daily',
       :name => 'cosmic-calendar',
       :sign => 'aries',
@@ -39,7 +39,7 @@ describe Webservice do
   
   it "should correctly transform special parameters" do
     webservice = Webservice.create!(:title => "web", :base_url => "url", :rule_scheme => rules)
-    webservice.load(
+    webservice.load!(
       :frequency => 'daily',
       :name => 'overview',
       :sign => 'taurus',
@@ -58,7 +58,7 @@ describe Webservice do
       :base_url => "url", 
       :default_parameters => "key: secret\ndate: today"
     )
-    webservice.load
+    webservice.load!
     webservice.parameters.should == { :key => 'secret', :date => 'today' }
   end
   
@@ -68,20 +68,31 @@ describe Webservice do
       :base_url => 'http://maps.google.com/maps/geo',
       :default_parameters => "q: boguchany\noutput: xml\nkey: abcdefg"
     )
-    webservice.load
-    result = webservice.get_data
-    doc = Nokogiri::XML.parse(result)
-    doc.search(
-      '//kml:LatLonBox', { 'kml' => 'http://earth.google.com/kml/2.0'}
-    ).first.attributes['north'].to_s.should == '58.3829695'
+    webservice.load!
+    webservice.get_data!
+    webservice.data.at(
+      './/xmlns:LatLonBox', webservice.data.root.namespaces
+    ).attributes['north'].to_s.should == '58.3829695'
   end
   
   it "should return nil if webservice is unaccessible" do
     webservice = Webservice.create!(
       :title => "Geocoder", :base_url => 'http://blabla', :default_parameters => "q: bla"
     )
-    webservice.load
-    webservice.get_data.should be_nil
+    webservice.load!
+    webservice.get_data!
+    webservice.data.should be_nil
+  end
+  
+  it "should select value of node from data" do
+    webservice = Webservice.create!(
+      :title => "Geocoder", 
+      :base_url => 'http://maps.google.com/maps/geo',
+      :default_parameters => "q: boguchany\noutput: xml\nkey: abcdefg"
+    )
+    webservice.load!
+    webservice.get_data!
+    webservice.get_value(".//xmlns:coordinates").should == "97.4598388,58.3798219,0"
   end
   
 end
