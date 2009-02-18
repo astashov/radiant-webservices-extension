@@ -13,6 +13,7 @@ class WebservicesExtension < Radiant::Extension
   
   def activate
     admin.tabs.add "Webservices", "/admin/webservices", :after => "Layouts" 
+    Page.send :include, WebserviceTags
   end
   
   def deactivate
