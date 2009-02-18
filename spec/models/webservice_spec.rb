@@ -1,5 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
-
+require 'nokogiri'
 describe Webservice do
   
   it "should be created" do
@@ -50,6 +50,38 @@ describe Webservice do
       :sign => 'taurus',
       :date => (Date.today - 1.day).strftime("%m/%d/%Y")
     }
+  end
+  
+  it "should load only default parameters if rule_scheme is empty" do
+    webservice = Webservice.create!(
+      :title => "web", 
+      :base_url => "url", 
+      :default_parameters => "key: secret\ndate: today"
+    )
+    webservice.load
+    webservice.parameters.should == { :key => 'secret', :date => 'today' }
+  end
+  
+  it "should make remote call to webservice" do
+    webservice = Webservice.create!(
+      :title => "Geocoder", 
+      :base_url => 'http://maps.google.com/maps/geo',
+      :default_parameters => "q: boguchany\noutput: xml\nkey: abcdefg"
+    )
+    webservice.load
+    result = webservice.get_data
+    doc = Nokogiri::XML.parse(result)
+    doc.search(
+      '//kml:LatLonBox', { 'kml' => 'http://earth.google.com/kml/2.0'}
+    ).first.attributes['north'].to_s.should == '58.3829695'
+  end
+  
+  it "should return nil if webservice is unaccessible" do
+    webservice = Webservice.create!(
+      :title => "Geocoder", :base_url => 'http://blabla', :default_parameters => "q: bla"
+    )
+    webservice.load
+    webservice.get_data.should be_nil
   end
   
 end
