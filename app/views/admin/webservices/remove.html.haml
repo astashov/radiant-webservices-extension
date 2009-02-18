@@ -1,0 +1,11 @@
+%h1 Remove Webservice
+
+%p
+  Are you sure you want to 
+  %strong.warning permanently remove
+  the following webservice?
+
+- form_for [:admin, model], :html => {:method => :delete} do
+  %ul
+    %li= submit_tag("Delete Link")
+    %li= link_to 'Cancel', admin_webservices_path

@@ -9,7 +9,7 @@ unless defined? RADIANT_ROOT
     require "#{File.expand_path(File.dirname(__FILE__) + "/../../../../")}/config/environment"
   end
 end
-require File.expand_path(File.dirname(__FILE__) + "/route_handler_spec_helpers")
+require File.expand_path(File.dirname(__FILE__) + "/webservices_spec_helpers")
 require "#{RADIANT_ROOT}/spec/spec_helper"
 
 include WebservicesSpecHelpers

@@ -1,0 +1,15 @@
+%h1 List of Webservices
+%p= link_to "Create Webservice", new_admin_webservice_path
+%table.index
+  %tr
+    %th Title
+    %th Base URL
+    %th Description
+    %th Destroy
+  - models.each do |model|
+    %tr
+      %td= link_to(h(model.title), edit_admin_webservice_path(model))
+      %td= link_to(h(model.base_url), h(model.base_url))
+      %td= h(model.description)
+      %td= link_to "Destroy", remove_admin_webservice_path(model)
+

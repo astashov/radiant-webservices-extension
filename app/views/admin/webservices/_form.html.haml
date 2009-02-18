@@ -1,0 +1,17 @@
+- form_for [:admin, model] do |f|
+  .form-area
+    %p.title
+      %label{ :for => "webservice_title" } Title
+      = f.text_field 'title', :class => "textbox"
+    %p.title
+      %label{ :for => "webservice_base_url" } Base URL
+      = f.text_field 'base_url', :class => "textbox"
+    %p.title
+      %label{ :for => "webservice_description" } Description
+      = f.text_field 'description', :class => "textbox"
+    %p.content
+      %label{ :for => "webservice_rule_scheme" } Rule Scheme
+      = f.text_area 'rule_scheme', :class => "textarea", :style => "width: 100%;"
+    %p= save_model_button(model)
+    %p= link_to "Cancel", admin_webservices_path
+      

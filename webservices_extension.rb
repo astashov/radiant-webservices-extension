@@ -6,10 +6,13 @@ class WebservicesExtension < Radiant::Extension
               "to your webservices and paste results on the pages"
   
   define_routes do |map|
+    map.namespace :admin, :member => { :remove => :get } do |admin|
+      admin.resources :webservices
+    end
   end
   
   def activate
-    #admin.tabs.add "Webservices", "/admin/webservices", :after => "Layouts" 
+    admin.tabs.add "Webservices", "/admin/webservices", :after => "Layouts" 
   end
   
   def deactivate
