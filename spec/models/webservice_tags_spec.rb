@@ -50,4 +50,21 @@ describe WebserviceTags do
     ).as('97.4598388,58.3798219,0')
   end
   
+  if Object.const_defined?("RouteHandlerExtension")
+    it "should get remote date with attributes from route_handler_params" do
+      Webservice.create!(
+        :title => "Geocoder", 
+        :base_url => 'http://maps.google.com/maps/geo',
+        :default_parameters => "key: abcdefg", 
+        :rule_scheme => "q:\n  - result: ':q'\noutput:\n  - result: ':output'"
+      )
+      @page.route_handler_params = { :q => 'boguchany', :output => 'xml', :something => 'some' }
+      @page.should render(
+        "<r:webservice title='Geocoder' route_handler_params='q, output'>" + 
+          "<r:webservice:content select='.//xmlns:coordinates' />" + 
+        "</r:webservice>"
+      ).as('97.4598388,58.3798219,0')
+    end
+  end
+  
 end

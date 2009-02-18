@@ -3,8 +3,19 @@ module WebserviceTags
 
   tag 'webservice' do |tag|
     webservice = Webservice.find_by_title(tag.attr.delete('title'))
+    attrs = {}
+    if Object.const_defined?("RouteHandlerExtension")
+      necessary_attrs = tag.attr.delete('route_handler_params')
+      if necessary_attrs
+        necessary_attrs = necessary_attrs.split(",").map {|p| p.strip.to_sym}
+        tag.locals.page.route_handler_params.each do |key, value| 
+          attrs[key] = value if necessary_attrs.include?(key)
+        end
+      end
+    end
+    attrs.merge!(tag.attr)
     if webservice
-      webservice.load!(tag.attr)
+      webservice.load!(attrs)
       webservice.get_data!
       tag.locals.webservice = webservice
     end
