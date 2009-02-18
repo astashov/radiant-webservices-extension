@@ -10,6 +10,7 @@ class Webservice < ActiveRecord::Base
   
   def load!(input_params = nil)
     input_params ||= {}
+    input_params.symbolize_keys!
     @parameters ||= {}
     load_default_parameters!
     rules = YAML.load(self.rule_scheme.to_s) || []
@@ -49,7 +50,7 @@ class Webservice < ActiveRecord::Base
   
   
   def get_value(xpath)
-    @data.at(xpath, @data.root.namespaces).text.to_s if @data
+    @data.at(xpath, @data.root.namespaces).text.to_s if @data && @data.root
   end
   
   

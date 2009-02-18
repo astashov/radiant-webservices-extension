@@ -2,10 +2,9 @@ module WebserviceTags
   include Radiant::Taggable
 
   tag 'webservice' do |tag|
-    webservice = Webservice.find_by_title(tag.attr['title'])
+    webservice = Webservice.find_by_title(tag.attr.delete('title'))
     if webservice
-      params = tag.locals.page.route_handler_params
-      webservice.load!(params)
+      webservice.load!(tag.attr)
       webservice.get_data!
       tag.locals.webservice = webservice
     end
