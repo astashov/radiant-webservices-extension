@@ -1,6 +1,6 @@
 namespace :radiant do
   namespace :extensions do
-    namespace :route_handler do
+    namespace :webservices do
       
       desc "Runs the migration of the Webservices extension"
       task :migrate => :environment do
