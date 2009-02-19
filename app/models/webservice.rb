@@ -33,7 +33,7 @@ class Webservice < ActiveRecord::Base
       params << "#{CGI.escape(values[0].to_s)}=#{CGI.escape(values[1].to_s)}"
     end
     url = self.base_url + '?' + qs_params.join("&")
-    logger.info("We will use this URL: #{url}")
+    logger.info("\033[1;32mWe will use this URL: #{url}\033[0m")
     begin
       result = ""
       uri = URI.parse(url)
