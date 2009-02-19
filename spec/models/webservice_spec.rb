@@ -52,21 +52,11 @@ describe Webservice do
     }
   end
   
-  it "should load only default parameters if rule_scheme is empty" do
-    webservice = Webservice.create!(
-      :title => "web", 
-      :base_url => "url", 
-      :default_parameters => "key: secret\ndate: today"
-    )
-    webservice.load!
-    webservice.parameters.should == { :key => 'secret', :date => 'today' }
-  end
-  
   it "should make remote call to webservice" do
     webservice = Webservice.create!(
       :title => "Geocoder", 
       :base_url => 'http://maps.google.com/maps/geo',
-      :default_parameters => "q: boguchany\noutput: xml\nkey: abcdefg"
+      :rule_scheme => "q:\n  - result: boguchany\noutput:\n  - result: xml\nkey:\n  - result: abcdefg"
     )
     webservice.load!
     webservice.get_data!
@@ -77,7 +67,7 @@ describe Webservice do
   
   it "should return nil if webservice is unaccessible" do
     webservice = Webservice.create!(
-      :title => "Geocoder", :base_url => 'http://blabla', :default_parameters => "q: bla"
+      :title => "Geocoder", :base_url => 'http://blabla', :rule_scheme => "q:\n  - result: bla"
     )
     webservice.load!
     webservice.get_data!
@@ -88,7 +78,7 @@ describe Webservice do
     webservice = Webservice.create!(
       :title => "Geocoder", 
       :base_url => 'http://maps.google.com/maps/geo',
-      :default_parameters => "q: boguchany\noutput: xml\nkey: abcdefg"
+      :rule_scheme => "q:\n  - result: boguchany\noutput:\n  - result: xml\nkey:\n  - result: abcdefg"
     )
     webservice.load!
     webservice.get_data!

@@ -5,7 +5,6 @@ class CreateWebservices < ActiveRecord::Migration
       t.string :title, :null => false
       t.string :description
       t.text :rule_scheme
-      t.text :default_parameters
       
       t.timestamps
     end

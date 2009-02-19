@@ -13,14 +13,14 @@ describe WebserviceTags do
   
   it "should get remote data from webservice by <r:webservice />" do
     Webservice.create!(:title => "Geocoder", :base_url => 'http://maps.google.com/maps/geo',
-      :default_parameters => "q: boguchany\noutput: xml\nkey: abcdefg"
+      :rule_scheme => "q:\n  - result: boguchany\noutput:\n  - result: xml\nkey:\n  - result: abcdefg"
     )
     @page.should render("<r:webservice title='Geocoder'>Geo</r:webservice>").as('Geo')
   end
   
   it "should show remote data from webservice by <r:value-of />" do
     Webservice.create!(:title => "Geocoder", :base_url => 'http://maps.google.com/maps/geo',
-      :default_parameters => "q: boguchany\noutput: xml\nkey: abcdefg"
+      :rule_scheme => "q:\n  - result: boguchany\noutput:\n  - result: xml\nkey:\n  - result: abcdefg"
     )
     @page.should render(
       "<r:webservice title='Geocoder'><r:webservice:content select='.//xmlns:coordinates' /></r:webservice>"
@@ -29,7 +29,7 @@ describe WebserviceTags do
   
   it "should show nothing if webservice:content is not inside webservice" do
     Webservice.create!(:title => "Geocoder", :base_url => 'http://maps.google.com/maps/geo',
-      :default_parameters => "q: boguchany\noutput: xml\nkey: abcdefg"
+      :rule_scheme => "q:\n  - result: boguchany\noutput:\n  - result: xml\nkey:\n  - result: abcdefg"
     )
     @page.should render(
       "<r:webservice title='Geocoder'></r:webservice><r:webservice:content select='.//xmlns:coordinates' />"
@@ -40,8 +40,7 @@ describe WebserviceTags do
     Webservice.create!(
       :title => "Geocoder", 
       :base_url => 'http://maps.google.com/maps/geo',
-      :default_parameters => "key: abcdefg", 
-      :rule_scheme => "q:\n  - result: ':q'\noutput:\n  - result: ':output'"
+      :rule_scheme => "q:\n  - result: ':q'\noutput:\n  - result: ':output'\nkey:\n  - result: abcdefg"
     )
     @page.should render(
       "<r:webservice title='Geocoder' q='boguchany' output='xml'>" + 
@@ -55,8 +54,7 @@ describe WebserviceTags do
       Webservice.create!(
         :title => "Geocoder", 
         :base_url => 'http://maps.google.com/maps/geo',
-        :default_parameters => "key: abcdefg", 
-        :rule_scheme => "q:\n  - result: ':q'\noutput:\n  - result: ':output'"
+        :rule_scheme => "q:\n  - result: ':q'\noutput:\n  - result: ':output'\nkey:\n  - result: abcdefg"
       )
       @page.route_handler_params = { :q => 'boguchany', :output => 'xml', :something => 'some' }
       @page.should render(
