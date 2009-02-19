@@ -33,6 +33,7 @@ class Webservice < ActiveRecord::Base
       params << "#{CGI.escape(values[0].to_s)}=#{CGI.escape(values[1].to_s)}"
     end
     url = self.base_url + '?' + qs_params.join("&")
+    logger.info("We will use this URL: #{url}")
     begin
       result = ""
       uri = URI.parse(url)
@@ -41,9 +42,10 @@ class Webservice < ActiveRecord::Base
       http.start do
         http.request_get(uri.path + '?' + uri.query) { |res| result = res.body }
       end
+      logger.debug("Webservice response:\n#{result}")
       @data = Nokogiri::XML.parse(result)
     rescue => msg
-      logger.error("\033[1;31mCan't get webservice's date: #{msg.to_s}\033[0m")
+      logger.error("\033[1;31mCan't get webservice's data: #{msg.to_s}\033[0m")
       return nil
     end
   end
