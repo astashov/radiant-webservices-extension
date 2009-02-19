@@ -12,9 +12,6 @@
     %p.content
       %label{ :for => "webservice_rule_scheme" } Rule Scheme
       = f.text_area 'rule_scheme', :class => "textarea", :style => "width: 100%;"
-    %p.content
-      %label{ :for => "webservice_default_parameters" } Default parameters
-      = f.text_area 'default_parameters', :class => "textarea", :style => "width: 100%;"
     %p= save_model_button(model)
     %p= link_to "Cancel", admin_webservices_path
       

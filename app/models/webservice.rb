@@ -5,6 +5,7 @@ class Webservice < ActiveRecord::Base
   
   validates_presence_of :base_url, :title
   validates_uniqueness_of :title
+  validate :correct_yaml_in_rule_scheme
   
   attr_reader :parameters, :data
   
@@ -12,16 +13,24 @@ class Webservice < ActiveRecord::Base
     input_params ||= {}
     input_params.symbolize_keys!
     @parameters ||= {}
-    load_default_parameters!
-    rules = YAML.load(self.rule_scheme.to_s) || []
+    rules = YAML.load(self.rule_scheme.to_s)
+    rules = rules.blank? ? {} : rules
     load_date!(input_params) if input_params[:date]
     rules.each do |param, param_rules|
-      param_rules.each do |rule|
-        result = rule.delete('result')
-        if should_use_current_rule?(rule, input_params)
-          result = substitute_variables_in_result(result, input_params)
-          @parameters[param.to_sym] = result
-          break
+      if param_rules.is_a?(String)
+        @parameters[param.to_sym] = substitute_variables_in_result(param_rules, input_params)
+      else
+        param_rules.each do |rule|
+          result = rule.delete('value')
+          unless result
+            logger.error("\033[1;31mYou don't specify value in rule scheme of webservice '#{self.title}'\033[0m")
+            break
+          end
+          if should_use_current_rule?(rule.delete('if'), input_params)
+            result = substitute_variables_in_result(result, input_params)
+            @parameters[param.to_sym] = result
+            break
+          end
         end
       end
     end
@@ -59,13 +68,7 @@ class Webservice < ActiveRecord::Base
   end
   
   
-  private
-  
-    def load_default_parameters!
-      parameters = YAML.load(self.default_parameters.to_s) || {}
-      parameters.each { |key, value| @parameters[key.to_sym] = value }
-    end
-  
+  private  
   
     def load_date!(input_params)
       given_date = input_params[:date]
@@ -89,14 +92,30 @@ class Webservice < ActiveRecord::Base
     
     def should_use_current_rule?(rule, input_params)
       condition = true
-      rule.each do |key, value|
-        if value == '_any_'
-          condition &&= true
-        else
-          condition &&= input_params[key.to_sym] == value
+      if rule && rule.is_a?(Hash)
+        rule.each do |key, value|
+          if value == '_any_'
+            condition &&= true
+          else
+            condition &&= input_params[key.to_sym] == value
+          end
         end
       end
       condition
+    end
+    
+    
+    def correct_yaml_in_rule_scheme
+      error = false
+      begin
+        yaml = YAML.load(self.rule_scheme.to_s)
+      rescue
+        error = true
+      end
+      error = true if !yaml.blank? && yaml.is_a?(String)
+      if error
+        errors.add(:rule_scheme, "You should specifify correct YAML format")
+      end
     end
   
 end

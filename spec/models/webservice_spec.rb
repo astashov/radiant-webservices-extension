@@ -22,6 +22,24 @@ describe Webservice do
     webservice.errors.on(:title).should_not be_nil
   end  
 
+  it "should correctly not transform invalid YAML" do
+    webservice = Webservice.new(:title => "web", :base_url => "url", :rule_scheme => "as: as: 'sadf")
+    webservice.should_not be_valid
+    webservice.errors.on(:rule_scheme).should_not be_nil
+  end
+  
+  it "should correctly not transform string" do
+    webservice = Webservice.new(:title => "web", :base_url => "url", :rule_scheme => "asdf")
+    webservice.should_not be_valid
+    webservice.errors.on(:rule_scheme).should_not be_nil
+  end
+  
+  it "should correctly not transform blank string" do
+    webservice = Webservice.create!(:title => "web", :base_url => "url", :rule_scheme => "")
+    webservice.load!
+    webservice.parameters.should == {}
+  end
+  
   it "should correctly transform special parameters" do
     webservice = Webservice.create!(:title => "web", :base_url => "url", :rule_scheme => rules)
     webservice.load!(
@@ -56,7 +74,7 @@ describe Webservice do
     webservice = Webservice.create!(
       :title => "Geocoder", 
       :base_url => 'http://maps.google.com/maps/geo',
-      :rule_scheme => "q:\n  - result: boguchany\noutput:\n  - result: xml\nkey:\n  - result: abcdefg"
+      :rule_scheme => "q:\n  - value: boguchany\noutput:\n  - value: xml\nkey:\n  - value: abcdefg"
     )
     webservice.load!
     webservice.get_data!
@@ -67,7 +85,7 @@ describe Webservice do
   
   it "should return nil if webservice is unaccessible" do
     webservice = Webservice.create!(
-      :title => "Geocoder", :base_url => 'http://blabla', :rule_scheme => "q:\n  - result: bla"
+      :title => "Geocoder", :base_url => 'http://blabla', :rule_scheme => "q:\n  - value: bla"
     )
     webservice.load!
     webservice.get_data!
@@ -78,7 +96,7 @@ describe Webservice do
     webservice = Webservice.create!(
       :title => "Geocoder", 
       :base_url => 'http://maps.google.com/maps/geo',
-      :rule_scheme => "q:\n  - result: boguchany\noutput:\n  - result: xml\nkey:\n  - result: abcdefg"
+      :rule_scheme => "q: boguchany\noutput: xml\nkey: abcdefg"
     )
     webservice.load!
     webservice.get_data!

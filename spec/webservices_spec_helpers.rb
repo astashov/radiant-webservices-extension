@@ -14,15 +14,16 @@ module WebservicesSpecHelpers
     rules = <<END
 content_type:
   -
-    name: cosmic-calendar
-    frequency: daily
-    result: ":name"
+    if:
+      name: cosmic-calendar
+      frequency: daily
+    value: ":name"
   -
-    name: "_any_"
-    result: ":frequency_:name"
+    if:
+      name: "_any_"
+    value: ":frequency_:name"
 
-sign:
-  - result: ":sign"
+sign: ":sign"
 END
   end
   
