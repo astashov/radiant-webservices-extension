@@ -63,7 +63,7 @@ class Webservice < ActiveRecord::Base
   def get_value(xpath)
     if @data && @data.root
       value = @data.at(xpath, @data.root.namespaces)
-      value.blank? ? "<strong>Value is not found</strong>" : value.text.to_s
+      value.blank? ? "" : value.text.to_s
     end
   end
   
