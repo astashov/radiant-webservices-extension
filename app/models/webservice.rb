@@ -48,9 +48,7 @@ class Webservice < ActiveRecord::Base
       uri = URI.parse(url)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = (uri.scheme == "https")  # enable SSL/TLS
-      http.start do
-        http.request_get(uri.path + '?' + uri.query) { |res| result = res.body }
-      end
+      result = http.request_get(uri.path + '?' + uri.query).body
       logger.debug("Webservice response:\n#{result}")
       @data = Nokogiri::XML.parse(result)
     rescue => msg

@@ -71,6 +71,7 @@ describe Webservice do
   end
   
   it "should make remote call to webservice" do
+    success_remote_expectations
     webservice = Webservice.create!(
       :title => "Geocoder", 
       :base_url => 'http://maps.google.com/maps/geo',
@@ -84,6 +85,7 @@ describe Webservice do
   end
   
   it "should return nil if webservice is unaccessible" do
+    unsuccess_remote_expectations
     webservice = Webservice.create!(
       :title => "Geocoder", :base_url => 'http://blabla', :rule_scheme => "q:\n  - value: bla"
     )
@@ -93,6 +95,7 @@ describe Webservice do
   end
   
   it "should select value of node from data" do
+    success_remote_expectations
     webservice = Webservice.create!(
       :title => "Geocoder", 
       :base_url => 'http://maps.google.com/maps/geo',

@@ -9,6 +9,7 @@ describe WebserviceTags do
       :breadcrumb => 'New Page',
       :status_id => '100'
     )
+    success_remote_expectations
   end
   
   it "should get remote data from webservice by <r:webservice />" do
