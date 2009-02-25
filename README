@@ -1,0 +1,111 @@
+== Webservices Radiant Extenion
+
+This extension allows to use responses of remote webservices on your pages.
+
+== Requirements
+
+It requires 'nokogiri' gem.
+
+== Features
+
+It adds two additional radius tags: webservices and webservices:content
+You can get remote queries somewhere on your pages and get necessary data from it
+by XPath queries.
+
+== Installation
+
+(from the radiant application root)
+  
+  git clone git://github.com/astashov/radiant-webservices-extension.git vendor/extensions/webservices
+  rake RAILS_ENV=production db:migrate:extensions
+
+== Using
+
+At first, you should create new 'Webservice' on the /admin/webservices ('Webservices' tab).
+'Webservice' has following fields:
+1. Title. Required and unique field.
+2. Base URL. It is required field - Url of remote webservice. E.g., 'http://maps.google.com/maps/geo'
+3. Description
+4. Rule Scheme.
+
+Rule Scheme is array of rules to convert input parameters (like attributes of webservice tag)
+to querystring parameters of webservice URL. It uses YAML format. If it is empty,
+remote query to webservice will be executed without querystring params (only if these input
+parameters don't include :date - see below).
+
+= Simple example of Rule Scheme.
+
+  q: london
+  output: xml
+  key: abc
+
+It will generate remote request: http://maps.google.com/maps/geo?q=london&output=xml&key=abc
+
+= Extended example of Rule Scheme
+
+If by some reasons input parameters are not equal querystring parameters, you can configure
+conversion between input and querystring parameters.
+
+  q:
+    -
+      if:
+        city: Leningrad
+        name: old
+      value: Peterburg
+    -
+      if:
+        city: "_any_"
+      value: ":city
+  output: xml
+  key: abc
+
+There are two special keys - 'if' and 'value'. The Rule Scheme parser verifies rules
+in order. At first, it check input parameters city and name. If there was a tag
+
+  <r:webservice title="Geo" city="Leningrad" name="old"> 
+
+somewhere on the page, first condition is true and it generate querystring parameters:
+
+  http://maps.google.com/maps/geo?q=Peterburg&output=xml&key=abc
+
+If there was a tag
+
+  <r:webservice title="Geo" city="Krasnoyarsk" name="new">
+
+somewhere on the page, first condition is false, but second is true ("_any_" value 
+is always true, so second condition will true in any case). Then querystring parameters will be:
+
+  http://maps.google.com/maps/geo?q=Krasnoyarsk&output=xml&key=abc
+
+You also can use
+
+  output:
+    -
+      value: xml
+
+It is the same as "output: xml" - if parser doesn't find 'if' block, it will decide that this is true. :)
+
+
+After creating new 'Webservice' you can make remote calls somewhere on the page by special tags.
+There are two special tags: <r:webservice> and <r:webservice:content>. The first one
+makes remote call and get data from the webservice. Second one is used to show
+part of this data to visitors. Example:
+
+  <r:webservice title="title_of_webservice" q="Krasnoyarsk">
+    Coordinates of Krasnoyarsk city are:
+    <r:webservice:content select='.//coordinates' />
+  </r:webservice>
+
+<r:webservice> can get any number of attributes. All these attributes, except
+'title' will be used for generating querystring parameters to remote request to webserver.
+'title' attribute tells us what webservice need to use.
+
+<r:webservice:content> has only one attribute - 'select'. It contains XPath value
+to extract some necessary data from webservice's response.
+
+<r:webservice:content> can be used only within <r:webservice> tags.
+
+
+== Authors and Credits
+ 
+Written by Anton Astashov, with Brenton Cheng, for Astrology.com (a division of iVillage Inc.)

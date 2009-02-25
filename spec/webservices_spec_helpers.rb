@@ -11,7 +11,7 @@ module WebservicesSpecHelpers
   # You may avoid to specify date, it will be constructed automatically
   # (for today, tomorrow, yesterday, lastweek, nextweek, thisweek or YYYYMMDD)
   def rules
-    rules = <<END
+<<END
 content_type:
   -
     if:
