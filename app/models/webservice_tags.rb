@@ -1,11 +1,15 @@
 module WebserviceTags
   include Radiant::Taggable
 
-  # Tag <r:webservice>. It has only one special attribute - title. All other
-  # attributes will be used as input parameters before parameters conversion
-  # by Rule Scheme. Example:
-  # 
-  #   <r:webservice title="Geo" name="London"> ...Content here... </r:webservice>
+  desc %{
+    Makes remote request to webservice. It has only one special attribute - @title@. All other
+    attributes will be used as input parameters before conversion of these parameters
+    by Rule Scheme.
+
+    *Usage:*
+
+    <pre><code><r:webservice title="webservice_title" [other attributes...]>...</r:webservice></code></pre>
+  }
   tag 'webservice' do |tag|
     webservice = Webservice.find_by_title(tag.attr.delete('title'))
     attrs = {}
@@ -21,14 +25,16 @@ module WebserviceTags
     tag.expand
   end
 
-
-  # Tag <r:webservice:content>. Used for extracting data from webservice response. 
-  # It has only one parameter - select, that contains XPath for getting value from response.
-  # Example:
-  # 
-  #   <r:webservice title="Geo" name="London">
-  #     <r:webservice:content select=".//coordinates" />
-  #   </r:webservice>
+  desc %{
+   Shows some value from webservice response. It has only one attribute - @select@, 
+   that contains XPath for getting values from response.
+   
+   *Usage: (withing webservice tag)*
+   
+   <pre><code><r:webservice title="webservice_title" [other attributes...]>
+     <r:webservice:content select="//some/xpath" />
+   </r:webservice></code></pre>
+  }
   tag 'webservice:content' do |tag|
     webservice = tag.locals.webservice
     webservice.get_value(tag.attr['select']) if webservice
