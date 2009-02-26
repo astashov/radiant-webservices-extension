@@ -1,7 +1,7 @@
 - form_for [:admin, model] do |f|
   .form-area
     %p.title
-      %label{ :for => "webservice_title" } Title
+      %label{ :for => "webservice_title" } Name
       = f.text_field 'title', :class => "textbox"
     %p.title
       %label{ :for => "webservice_base_url" } Base URL

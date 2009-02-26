@@ -2,16 +2,16 @@ module WebserviceTags
   include Radiant::Taggable
 
   desc %{
-    Makes remote request to webservice. It has only one special attribute - @title@. All other
+    Makes remote request to webservice. It has only one special attribute - @name@. All other
     attributes will be used as input parameters before conversion of these parameters
     by Rule Scheme.
 
     *Usage:*
 
-    <pre><code><r:webservice title="webservice_title" [other attributes...]>...</r:webservice></code></pre>
+    <pre><code><r:webservice name="webservice_title" [other attributes...]>...</r:webservice></code></pre>
   }
   tag 'webservice' do |tag|
-    webservice = Webservice.find_by_title(tag.attr.delete('title'))
+    webservice = Webservice.find_by_title(tag.attr.delete('name'))
     attrs = {}
     if Object.const_defined?("RouteHandlerExtension") && tag.locals.page.route_handler_params
       attrs.merge!(tag.locals.page.route_handler_params)
@@ -31,7 +31,7 @@ module WebserviceTags
    
    *Usage: (withing webservice tag)*
    
-   <pre><code><r:webservice title="webservice_title" [other attributes...]>
+   <pre><code><r:webservice name="webservice_title" [other attributes...]>
      <r:webservice:content select="//some/xpath" />
    </r:webservice></code></pre>
   }

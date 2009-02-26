@@ -16,7 +16,7 @@ describe WebserviceTags do
     Webservice.create!(:title => "Geocoder", :base_url => 'http://maps.google.com/maps/geo',
       :rule_scheme => "q: boguchany\noutput: xml\nkey: abcdefg"
     )
-    @page.should render("<r:webservice title='Geocoder'>Geo</r:webservice>").as('Geo')
+    @page.should render("<r:webservice name='Geocoder'>Geo</r:webservice>").as('Geo')
   end
   
   it "should show remote data from webservice by <r:value-of />" do
@@ -24,7 +24,7 @@ describe WebserviceTags do
       :rule_scheme => "q: boguchany\noutput: xml\nkey: abcdefg"
     )
     @page.should render(
-      "<r:webservice title='Geocoder'><r:webservice:content select='.//xmlns:coordinates' /></r:webservice>"
+      "<r:webservice name='Geocoder'><r:webservice:content select='.//xmlns:coordinates' /></r:webservice>"
     ).as('97.4598388,58.3798219,0')
   end
   
@@ -33,7 +33,7 @@ describe WebserviceTags do
       :rule_scheme => "q: boguchany\noutput: xml\nkey: abcdefg"
     )
     @page.should render(
-      "<r:webservice title='Geocoder'></r:webservice><r:webservice:content select='.//xmlns:coordinates' />"
+      "<r:webservice name='Geocoder'></r:webservice><r:webservice:content select='.//xmlns:coordinates' />"
     ).as('')
   end
   
@@ -44,7 +44,7 @@ describe WebserviceTags do
       :rule_scheme => "q: boguchany\noutput: xml\nkey: abcdefg"
     )
     @page.should render(
-      "<r:webservice title='Geocoder' q='boguchany' output='xml'>" + 
+      "<r:webservice name='Geocoder' q='boguchany' output='xml'>" + 
         "<r:webservice:content select='.//xmlns:coordinates' />" + 
       "</r:webservice>"
     ).as('97.4598388,58.3798219,0')
@@ -59,7 +59,7 @@ describe WebserviceTags do
       )
       @page.route_handler_params = { :q => 'boguchany', :output => 'xml', :something => 'some' }
       @page.should render(
-        "<r:webservice title='Geocoder'>" + 
+        "<r:webservice name='Geocoder'>" + 
           "<r:webservice:content select='.//xmlns:coordinates' />" + 
         "</r:webservice>"
       ).as('97.4598388,58.3798219,0')
