@@ -69,6 +69,10 @@ describe Webservice do
     webservice.parameters[:date].should == (Date.civil(Date.today.year, Date.today.month - 1, 1)).strftime("%m/%d/%Y")
     webservice.reload.load!(:date => 'nextmonth')
     webservice.parameters[:date].should == (Date.civil(Date.today.year, Date.today.month + 1, 1)).strftime("%m/%d/%Y")
+    webservice.reload.load!(:date => '2_days_ago')
+    webservice.parameters[:date].should == (Date.today - 2.days).strftime("%m/%d/%Y")
+    webservice.reload.load!(:date => '4_days_ago')
+    webservice.parameters[:date].should == (Date.today - 4.days).strftime("%m/%d/%Y")
   end
   
   it "should correctly transform special parameters" do
