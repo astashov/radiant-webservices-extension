@@ -68,6 +68,9 @@ class Webservice < ActiveRecord::Base
     def load_date(given_date)
       date = case
       when given_date == 'today'; Date.today
+      when given_date == 'thismonth'; Date.civil(Date.today.year, Date.today.month, 1)
+      when given_date == 'lastmonth'; Date.civil(Date.today.year, Date.today.month - 1, 1)
+      when given_date == 'nextmonth'; Date.civil(Date.today.year, Date.today.month + 1, 1)
       when given_date == 'tomorrow'; Date.today + 1.day
       when given_date == 'yesterday'; Date.today - 1.day
       else; Date.civil(given_date[0..3].to_i, given_date[4..5].to_i, given_date[6..7].to_i)

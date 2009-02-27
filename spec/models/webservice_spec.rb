@@ -55,6 +55,22 @@ describe Webservice do
     }
   end
   
+  it "should correctly transform special date params" do
+    webservice = Webservice.create!(:title => "web", :base_url => "url", :rule_scheme => rules)
+    webservice.load!(:date => 'today')
+    webservice.parameters[:date].should == (Date.today).strftime("%m/%d/%Y")
+    webservice.reload.load!(:date => 'yesterday')
+    webservice.parameters[:date].should == (Date.today - 1.day).strftime("%m/%d/%Y")
+    webservice.reload.load!(:date => 'tomorrow')
+    webservice.parameters[:date].should == (Date.today + 1.day).strftime("%m/%d/%Y")
+    webservice.reload.load!(:date => 'thismonth')
+    webservice.parameters[:date].should == (Date.civil(Date.today.year, Date.today.month, 1)).strftime("%m/%d/%Y")
+    webservice.reload.load!(:date => 'lastmonth')
+    webservice.parameters[:date].should == (Date.civil(Date.today.year, Date.today.month - 1, 1)).strftime("%m/%d/%Y")
+    webservice.reload.load!(:date => 'nextmonth')
+    webservice.parameters[:date].should == (Date.civil(Date.today.year, Date.today.month + 1, 1)).strftime("%m/%d/%Y")
+  end
+  
   it "should correctly transform special parameters" do
     webservice = Webservice.create!(:title => "web", :base_url => "url", :rule_scheme => rules)
     webservice.load!(
