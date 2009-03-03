@@ -74,7 +74,7 @@ class Webservice < ActiveRecord::Base
       when given_date == 'tomorrow'; Date.today + 1.day
       when given_date == 'yesterday'; Date.today - 1.day
       when given_date.match(/\d+_days_ago/); Date.today - given_date.match(/(\d+)_days_ago/)[1].to_i.days
-      else; Date.civil(given_date[0..3].to_i, given_date[4..5].to_i, given_date[6..7].to_i) rescue Date.today
+      else; Date.strptime(given_date, '%Y%m%d') rescue Date.today
       end
       date.strftime("%m/%d/%Y")
     end
