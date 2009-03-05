@@ -35,11 +35,16 @@ parameters don't include :date - see below).
 
 = Simple example of Rule Scheme.
 
-  q: london
+  q: ':city'
   output: xml
   key: abc
 
-It will generate remote request: http://maps.google.com/maps/geo?q=london&output=xml&key=abc
+Then, such tag: 
+  
+  <r:webservice name="mywebservice" city="london">
+
+will generate remote request: http://maps.google.com/maps/geo?q=london&output=xml&key=abc
+Words that begins with colon will be replaced by values of tag's attributes.
 
 = Extended example of Rule Scheme
 
@@ -83,7 +88,7 @@ You also can use
     -
       value: xml
 
-It is the same as "output: xml" - if parser doesn't find 'if' block, it will decide that this is true. :)
+It is the same as "output: xml" - if parser doesn't find 'if' block, it will decide that this is true.
 
 
 After creating new 'Webservice' you can make remote calls somewhere on the page by special tags.
