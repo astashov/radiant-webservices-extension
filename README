@@ -48,14 +48,14 @@ Words that begins with colon will be replaced by values of tag's attributes.
 
 = Extended example of Rule Scheme
 
-If by some reasons input parameters are not equal querystring parameters, you can configure
+If by some reasons input parameters are not equal to querystring parameters, you can configure
 conversion between input and querystring parameters.
 
   q:
     -
       if:
         city: Leningrad
-        name: old
+        age: old
       value: Peterburg
     -
       if:
@@ -65,9 +65,9 @@ conversion between input and querystring parameters.
   key: abc
 
 There are two special keys - 'if' and 'value'. The Rule Scheme parser verifies rules
-in order. At first, it check input parameters city and name. If there was a tag
+in order. At first, it check input parameters city and age. If there was a tag
 
-  <r:webservice name="Geo" city="Leningrad" name="old"> 
+  <r:webservice name="Geo" city="Leningrad" age="old"> 
 
 somewhere on the page, first condition is true and it generate querystring parameters:
 
@@ -75,10 +75,10 @@ somewhere on the page, first condition is true and it generate querystring param
 
 If there was a tag
 
-  <r:webservice name="Geo" city="Krasnoyarsk" name="new">
+  <r:webservice name="Geo" city="Krasnoyarsk" age="new">
 
 somewhere on the page, first condition is false, but second is true ("_any_" value 
-is always true, so second condition will true in any case). Then querystring parameters will be:
+is always true, so second condition will be true in any case). Then querystring parameters will be:
 
   http://maps.google.com/maps/geo?q=Krasnoyarsk&output=xml&key=abc
 
