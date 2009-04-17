@@ -67,7 +67,7 @@ conversion between input and querystring parameters.
 There are two special keys - 'if' and 'value'. The Rule Scheme parser verifies rules
 in order. At first, it check input parameters city and name. If there was a tag
 
-  <r:webservice title="Geo" city="Leningrad" name="old"> 
+  <r:webservice name="Geo" city="Leningrad" name="old"> 
 
 somewhere on the page, first condition is true and it generate querystring parameters:
 
@@ -75,7 +75,7 @@ somewhere on the page, first condition is true and it generate querystring param
 
 If there was a tag
 
-  <r:webservice title="Geo" city="Krasnoyarsk" name="new">
+  <r:webservice name="Geo" city="Krasnoyarsk" name="new">
 
 somewhere on the page, first condition is false, but second is true ("_any_" value 
 is always true, so second condition will true in any case). Then querystring parameters will be:
@@ -96,14 +96,14 @@ There are two special tags: <r:webservice> and <r:webservice:content>. The first
 makes remote call and get data from the webservice. Second one is used to show
 part of this data to visitors. Example:
 
-  <r:webservice title="title_of_webservice" q="Krasnoyarsk">
+  <r:webservice name="name_of_webservice" q="Krasnoyarsk">
     Coordinates of Krasnoyarsk city are:
     <r:webservice:content select='.//coordinates' />
   </r:webservice>
 
 <r:webservice> can get any number of attributes. All these attributes, except
-'title' will be used for generating querystring parameters to remote request to webserver.
-'title' attribute tells us what webservice need to use.
+'name' will be used for generating querystring parameters to remote request to webserver.
+'name' attribute tells us what webservice need to use.
 
 <r:webservice:content> has only one attribute - 'select'. It contains XPath value
 to extract some necessary data from webservice's response.
