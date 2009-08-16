@@ -1,5 +1,3 @@
-require 'application'
-
 class WebservicesExtension < Radiant::Extension
   version "0.1"
   description "Adds webservices radiant tags that allows to make remote queries " +
